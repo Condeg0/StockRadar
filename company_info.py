@@ -6,7 +6,10 @@ def get_info(ticker):
     stock = yf.Ticker(ticker)
 
     # create a list and a dict to hold all relevant values
-    relevant_info_list = ["dividendYield", "trailingPE", "priceToSalesTrailing12Months", "returnOnAssets", "returnOnEquity", "revenuePerShare", "totalRevenue", "totalDebt", "freeCashflow", "debtToEquity", "profitMargins", "marketCap", "industry", "industryKey"]
+    # create a list and a dict to hold all relevant values - Valuation, Efficiency and Financials (in order)
+    relevant_info_list = ["dividendYield", "trailingPE", "priceToSalesTrailing12Months", "revenuePerShare",
+                          "priceToBook", "returnOnAssets", "debtToEquity", "returnOnEquity", "totalRevenue",
+                          "totalDebt", "freeCashflow",  "profitMargins", "marketCap", "industry", "industryKey"]
     relevant_info_dict = {}
 
     # add financial information to the dictionary
@@ -14,5 +17,6 @@ def get_info(ticker):
         relevant_info_dict[item] = stock.info[item]
 
     return relevant_info_dict
+
 
 print(get_info("aapl"))
