@@ -1,27 +1,36 @@
 import tkinter as tk
 from tkinter import ttk
+import ttkthemes
 from PIL import Image, ImageTk
 import humanize
-import comapny_info
+import company_info
 
 
 # ===== Sets up the GUI interface =====
 
-# Global variables
+# Global variables 0 - positions can be changed for better organization!
 SMALL_FONT = "Arial 12"
 BIG_FONT = "ARIAL 14"
+THEME = "plastik"    # Choose theme in https://pypi.org/project/TKinterModernThemes/
 ROW1 = 100
 ROW2 = 600
 COLUMN1 = 400
 COLUMN2 = 600
 COLUMN3 = 800
 COLUMN4 = 1000
-COMPANY_INFO = comapny_info.get_info("aapl")
+COMPANY_INFO = company_info.get_info("aapl")
+
 
 # Sets up the window: title and size
 window = tk.Tk()
 window.title("Stock Analyzer")
 window.minsize(width=1500, height=900)
+
+
+# Sets up the theme - to chose!
+style = ttkthemes.ThemedStyle(window)
+style.set_theme(THEME)
+
 
 # Sets the search bar
 """ Functionality to add - clean search bar text on click, make it interactive and ability to suggest. """
@@ -40,11 +49,12 @@ dividend_yield_label = ttk.Label(text=f"Dividend Yield:\n{COMPANY_INFO["dividend
 dividend_yield_label.place(x=COLUMN3, y=ROW1)
 return_label = ttk.Label(text=f"Return", font=BIG_FONT)
 return_label.place(x=COLUMN4, y=ROW1)
-""" ===== JP ======
+"""
 Funcionality to add - calculate return: 
 1 - get the 12M historical price data. 
 2 - get first entry (price of 12M ago) and last entry (today's price)
 3 - formula: (first_entry / last_entry - 1)  * 100
+===== JP =====
 """
 
 # Sets the price graph
