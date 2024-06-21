@@ -5,7 +5,7 @@ STOCK = "aapl"
 
 
 # define function to get information about the stock
-def get_info(ticker):
+def get_info(ticker):  # add try except statement
     stock = yf.Ticker(ticker)
 
     # create a list and a dict to hold all relevant values - Valuation, Efficiency and Financials (in order)
@@ -26,7 +26,11 @@ def get_info(ticker):
     return relevant_info_dict
 
 
-# Defines function to get the graph based on two arguments - ticker and time frame (1d, 1w, 1m, 12m, 5y, all)
+# ===== JP =====
+# pandas - data frame manipulation
+# yfinance library - price history
+# # obs: get dataframe, clean it (remove unnecessary columns) and generate an image me frame (1d, 1w, 1m, 12m, 5y, all)
+# Defines function to get the graph based on two arguments - ticker and tf
 def get_graph(ticker, tf):
     stock = yf.Ticker(ticker)
 
