@@ -4,11 +4,9 @@ import ttkthemes
 from PIL import Image, ImageTk
 import humanize
 import company_info
-import GUI_functionality as G_fun
 
-# ===== Sets up the GUI interface ======
+# ===== Sets up Global variables =====
 
-# Global variables
 SMALL_FONT = "Arial 11"
 BIG_FONT = "ARIAL 14"
 THEME = "plastik"  # Choose theme in https://pypi.org/project/TKinterModernThemes/
@@ -18,55 +16,91 @@ COLUMN1 = 400
 COLUMN2 = 600
 COLUMN3 = 800
 COLUMN4 = 1000
-COMPANY_INFO = company_info.get_info("aapl")
+GRAPH_PATH = "/home/conde/Research/Histogram.png"
 
+
+# ===== Sets up the GUI functionality =====
+
+# On mouse click, clear the search bar and place cursor at first position
+def clear_search_bar(event):
+    event.widget.delete(0, tk.END)
+
+
+# Sets the search button functionality - on click, sets all labels
+def define_labels():  # requires one argument (a dictionary from company_info.get_info())
+    # Gets the input from search_bar and assigns it to function get_info - returns a dictionary
+    financial_dict = company_info.get_info(search_bar.get())  # add try except statement on get_info function
+
+    price_label.config(text=f"Open price:\n${financial_dict["open"]}", font=BIG_FONT)
+    market_cap_label.config(
+        text=f"Market Cap:\n{humanize.intword(financial_dict["marketCap"]).replace(" trillion", "T")}", font=BIG_FONT)
+    dividend_yield_label.config(text=f"Dividend Yield:\n{(100 * financial_dict["dividendYield"]):.2f}%", font=BIG_FONT)
+    return_label.config(text=f"12M Return:\n{financial_dict["yearlyReturn"]:.2f}%", font=BIG_FONT)
+    pe_label.config(text=f"Price/Earnings: {financial_dict["trailingPE"]:.0f}", font=BIG_FONT)
+
+
+# ===== JP =====
+def get_price_graph():
+    # example - call get_graph function from company_info.py with two arguments - stock name (ticker) and the time
+    # frame (tf) time frame selected can be retrieved by calling event.widget.cget("text"), which gets the name of
+    # button  pressed- check doc
+    graph = company_info.get_graph("aapl", "1d")
+
+    return graph
+
+
+# ===== Sets up the GUI interface ======
 # Sets up the window: title and size
 window = tk.Tk()
 window.title("Stock Analyzer")
 window.minsize(width=1500, height=900)
 
-#
+# Sets up the styles - to choose!
 style = ttkthemes.ThemedStyle(window)
 style.set_theme(THEME)
 
-# Sets the search bar
+# Sets the search bar and search button
 """ Functionality to add - clean search bar text on click, make it interactive and ability to suggest. """
 search_bar = ttk.Entry(width=25, font=SMALL_FONT)
 search_bar.insert(0, "Search Companies")
 search_bar.place(x=650, y=15)
-search_bar.bind("<FocusIn>", G_fun.clear_search_bar)
+search_bar.bind("<FocusIn>", clear_search_bar)
 ticker = search_bar.get()
 
-
-# Sets search bar button
-search_button = ttk.Button(text="🔎", width=5)
+search_button = ttk.Button(text="🔎", width=5, command=define_labels)
 search_button.place(x=860, y=15)
 
-
 # Sets ROW1 labels - current price, market cap, dividend yield and 12M return
-price_label = ttk.Label(text=f"Open price:\n{COMPANY_INFO["open"]}", font=BIG_FONT)
+price_label = ttk.Label(text=f"Open price:", font=BIG_FONT)
 price_label.place(x=COLUMN1, y=ROW1)
-market_cap_label = ttk.Label(
-    text=f"Market Cap:\n{humanize.intword(COMPANY_INFO["marketCap"]).replace(" trillion", "T")}", font=BIG_FONT)
+market_cap_label = ttk.Label(text=f"Market Cap:", font=BIG_FONT)
 market_cap_label.place(x=COLUMN2, y=ROW1)
-dividend_yield_label = ttk.Label(text=f"Dividend Yield:\n{(100 * COMPANY_INFO["dividendYield"]):.2f}%", font=BIG_FONT)
+dividend_yield_label = ttk.Label(text=f"Dividend Yield:", font=BIG_FONT)
 dividend_yield_label.place(x=COLUMN3, y=ROW1)
-return_label = ttk.Label(text=f"12M Return:\n{COMPANY_INFO["yearlyReturn"]:.2f}%", font=BIG_FONT)
+return_label = ttk.Label(text=f"12M Return:", font=BIG_FONT)
 return_label.place(x=COLUMN4, y=ROW1)
-"""Functionality to add - calculate return: 
-1 - get the 12M historical price data. 
-2 - get first entry (price of 12M ago) and last entry (today's price)
-3 - formula: (first_entry / last_entry - 1)  * 100
-"""
 
-# Sets the price graph
-graph = Image.open("/home/conde/Research/Histogram.png")  # Open image file with Pillow
+# Sets the price graph and graph buttons
+graph = Image.open(GRAPH_PATH)  # Open image file with Pillow
 graph_image = ImageTk.PhotoImage(graph)  # convert image to PhotoImage object
 price_graph_label = ttk.Label(image=graph_image)  # create a ttk label and set the image
-price_graph_label.place(x=400, y=150)
+price_graph_label.place(x=400, y=200)
+
+one_day_button = ttk.Button(text="1D", command=get_price_graph, width=3)  # 1D button
+one_day_button.place(x=400, y=200)
+five_days_button = ttk.Button(text="5D", command=get_price_graph, width=3)  # 5D button
+five_days_button.place(x=430, y=200)
+one_month_button = ttk.Button(text="1M", command=get_price_graph, width=3)  # 1M button
+one_month_button.place(x=460, y=200)
+three_month_button = ttk.Button(text="3M", command=get_price_graph, width=3)  # 3M button
+three_month_button.place(x=490, y=200)
+ytd_button = ttk.Button(text="YTD", command=get_price_graph, width=4)  # YTD button
+ytd_button.place(x=520, y=200)
+max_button = ttk.Button(text="MAX", command=get_price_graph, width=5)
+max_button.place(x=555, y=200)
 
 # Sets Row 2 labels (valuation indicators) - P/E, P/B, Revenue per share, Price to Sales
-pe_label = ttk.Label(text=f"Price/Earnings: {COMPANY_INFO["trailingPE"]:.0f}", font=BIG_FONT)
+pe_label = ttk.Label(text=f"Price/Earnings", font=BIG_FONT)
 pe_label.place(x=COLUMN1, y=ROW2)
 
 window.mainloop()
