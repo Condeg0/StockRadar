@@ -27,10 +27,13 @@ def get_info(ticker):  # add try except statement
 
 
 # ===== JP =====
-# pandas - data frame manipulation
+# pandas - data frame manipulation (may not be necessary)
 # yfinance library - price history
 # # obs: get dataframe, clean it (remove unnecessary columns) and generate an image me frame (1d, 1w, 1m, 12m, 5y, all)
 # Defines function to get the graph based on two arguments - ticker and tf
+ # example - call get_graph function from company_info.py with two arguments - stock name (ticker) and the time-
+ # frame (tf). time frame selected can be retrieved by calling event.widget.cget("text"), which gets the name of
+ # button  pressed- check doc
 def get_graph(ticker, tf):
     stock = yf.Ticker(ticker)
 
