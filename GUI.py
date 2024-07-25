@@ -4,6 +4,7 @@ import ttkthemes
 from PIL import Image, ImageTk
 import humanize
 import company_info
+# import matplo
 
 # ===== Sets up Global variables =====
 
@@ -16,7 +17,7 @@ COLUMN1 = 400
 COLUMN2 = 600
 COLUMN3 = 800
 COLUMN4 = 1000
-GRAPH_PATH = "/home/conde/Research/Histogram.png"
+GRAPH_PATH = "/home/rafaelconde/Research/Histogram - S&P500 weekly return.png"
 
 
 # ===== Sets up the GUI functionality =====
@@ -39,6 +40,16 @@ def define_labels():  # requires one argument (a dictionary from company_info.ge
     pe_label.config(text=f"Price/Earnings: {financial_dict["trailingPE"]:.0f}", font=BIG_FONT)
 
 
+# ===== JP =====
+def get_price_graph(ticker, tf):
+    # example - call get_graph function from company_info.py with two arguments - stock name (ticker) and the time
+    # frame (tf) time frame selected can be retrieved by calling event.widget.cget("text"), which gets the name of
+    # button  pressed - check doc
+    graph = company_info.get_graph("aapl", "1d")
+
+    return graph
+
+
 # ===== Sets up the GUI interface ======
 # Sets up the window: title and size
 window = tk.Tk()
@@ -50,7 +61,7 @@ style = ttkthemes.ThemedStyle(window)
 style.set_theme(THEME)
 
 # Sets the search bar and search button
-""" Functionality to add - clean search bar text on click, make it interactive and ability to suggest. """
+""" Functionality to add - make it interactive, error handling (error message), ability to suggest"""
 search_bar = ttk.Entry(width=25, font=SMALL_FONT)
 search_bar.insert(0, "Search Companies")
 search_bar.place(x=650, y=15)
@@ -75,22 +86,32 @@ graph = Image.open(GRAPH_PATH)  # Open image file with Pillow
 graph_image = ImageTk.PhotoImage(graph)  # convert image to PhotoImage object
 price_graph_label = ttk.Label(image=graph_image)  # create a ttk label and set the image
 price_graph_label.place(x=400, y=200)
-# JP ---> add arguments to "command" get_graph. 
-one_day_button = ttk.Button(text="1D", command=get_graph, width=3)  # 1D button
+
+one_day_button = ttk.Button(text="1D", command=get_price_graph, width=3)  # 1D button
 one_day_button.place(x=400, y=200)
-five_days_button = ttk.Button(text="5D", command=get_graph, width=3)  # 5D button
+five_days_button = ttk.Button(text="5D", command=get_price_graph, width=3)  # 5D button
 five_days_button.place(x=430, y=200)
-one_month_button = ttk.Button(text="1M", command=get_graph, width=3)  # 1M button
+one_month_button = ttk.Button(text="1M", command=get_price_graph, width=3)  # 1M button
 one_month_button.place(x=460, y=200)
-three_month_button = ttk.Button(text="3M", command=get_graph, width=3)  # 3M button
+three_month_button = ttk.Button(text="3M", command=get_price_graph, width=3)  # 3M button
 three_month_button.place(x=490, y=200)
-ytd_button = ttk.Button(text="YTD", command=get_graph, width=4)  # YTD button
+ytd_button = ttk.Button(text="YTD", command=get_price_graph, width=4)  # YTD button
 ytd_button.place(x=520, y=200)
-max_button = ttk.Button(text="MAX", command=get_graph, width=5)
+max_button = ttk.Button(text="MAX", command=get_price_graph, width=5)
 max_button.place(x=555, y=200)
 
 # Sets Row 2 labels (valuation indicators) - P/E, P/B, Revenue per share, Price to Sales
-pe_label = ttk.Label(text=f"Price/Earnings", font=BIG_FONT)
+pe_label = ttk.Label(text=f"Price/Earnings", font=BIG_FONT) # price earnings
 pe_label.place(x=COLUMN1, y=ROW2)
+
+# === ADD FROM HERE TO FUNCTION define_labels ===
+pts_label = ttk.Label(text="Price/Sales", font=BIG_FONT) # price to sales
+pts_label.place(x=COLUMN2, y=ROW2)
+rps_label = ttk.Label(text="Revenue Per Share", font=BIG_FONT) # revenue per share
+rps_label.place(x=COLUMN3, y=ROW2)
+pb_label = ttk.Label(text="Price/Book") # Price to Book
+pb_label.place(x=COLUMN4, y=ROW2)
+
+
 
 window.mainloop()
