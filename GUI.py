@@ -4,7 +4,7 @@ import ttkthemes
 from PIL import Image, ImageTk
 import humanize
 import company_info
-# import matplo
+
 
 # ===== Sets up Global variables =====
 
@@ -13,6 +13,7 @@ BIG_FONT = "ARIAL 14"
 THEME = "plastik"  # Choose theme in https://pypi.org/project/TKinterModernThemes/
 ROW1 = 100
 ROW2 = 600
+ROW3 = 1000
 COLUMN1 = 400
 COLUMN2 = 600
 COLUMN3 = 800
@@ -37,7 +38,13 @@ def define_labels():  # requires one argument (a dictionary from company_info.ge
         text=f"Market Cap:\n{humanize.intword(financial_dict["marketCap"]).replace(" trillion", "T")}", font=BIG_FONT)
     dividend_yield_label.config(text=f"Dividend Yield:\n{(100 * financial_dict["dividendYield"]):.2f}%", font=BIG_FONT)
     return_label.config(text=f"12M Return:\n{financial_dict["yearlyReturn"]:.2f}%", font=BIG_FONT)
-    pe_label.config(text=f"Price/Earnings: {financial_dict["trailingPE"]:.0f}", font=BIG_FONT)
+    pe_label.config(text=f"Price/Earnings:\n{financial_dict["trailingPE"]:.0f}", font=BIG_FONT)
+    pts_label.config(text=f"Price/Sales:\n{financial_dict["priceToSalesTrailing12Months"]}")
+    rps_label.config(text=f"Revenue per Share:\n{financial_dict["revenuePerShare"]}")
+    pb_label.config(text=f"Price/Book:\n{financial_dict["priceToBook"]}")
+    roa_label.config(text=f"ROA:\n{financial_dict["returnOnAssets"]}")
+    dte_label.config(text=f"Debt to Equity:\n{financial_dict["debtToEquity"]}")
+
 
 
 # ===== JP =====
@@ -101,17 +108,22 @@ max_button = ttk.Button(text="MAX", command=get_price_graph, width=5)
 max_button.place(x=555, y=200)
 
 # Sets Row 2 labels (valuation indicators) - P/E, P/B, Revenue per share, Price to Sales
-pe_label = ttk.Label(text=f"Price/Earnings", font=BIG_FONT) # price earnings
+pe_label = ttk.Label(text=f"Price/Earnings", font=SMALL_FONT)  # price earnings
 pe_label.place(x=COLUMN1, y=ROW2)
+pts_label = ttk.Label(text="Price/Sales", font=SMALL_FONT)  # price to sales
+pts_label.place(x=550, y=ROW2)
+rps_label = ttk.Label(text="Revenue Per Share", font=SMALL_FONT)  # revenue per share
+rps_label.place(x=680, y=ROW2)
+pb_label = ttk.Label(text="Price/Book", font=SMALL_FONT)  # Price to Book
+pb_label.place(x=850, y=ROW2)
 
 # === ADD FROM HERE TO FUNCTION define_labels ===
-pts_label = ttk.Label(text="Price/Sales", font=BIG_FONT) # price to sales
-pts_label.place(x=COLUMN2, y=ROW2)
-rps_label = ttk.Label(text="Revenue Per Share", font=BIG_FONT) # revenue per share
-rps_label.place(x=COLUMN3, y=ROW2)
-pb_label = ttk.Label(text="Price/Book") # Price to Book
-pb_label.place(x=COLUMN4, y=ROW2)
+# Valuation Info
 
-
+# Efficiency indicators
+roa_label = ttk.Label(text="ROA", font=SMALL_FONT)  # Return on Assets
+roa_label.place(x=ROW3, y=COLUMN1)
+dte_label = ttk.Label(text="Debt to Equity", font=SMALL_FONT)  # Debt to Equity
+dte_label.place(x=ROW3, y=COLUMN2)
 
 window.mainloop()
